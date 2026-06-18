@@ -59,7 +59,7 @@ test_requirement = [
 ]
 
 cuda_requirement = [
-    "cuda-python==12.1.0",
+    "cuda-python==13.3.1",
     "PyOpenGL==3.1.6",
     "PyOpenGL-accelerate==3.1.6",
     "pyrr==0.10.3",
