@@ -1,7 +1,7 @@
 try:
     from OpenGL.GL import *  # noqa F403
     import cupy as cp
-    from cuda import cudart
+    from cuda.bindings import runtime as cudart
 except ImportError:
     pass
 

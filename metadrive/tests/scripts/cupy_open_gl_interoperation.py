@@ -1,7 +1,7 @@
 import sys
 import cv2
 
-from cuda import cudart
+from cuda.bindings import runtime as cudart
 
 import numpy as np
 import cupy as cp

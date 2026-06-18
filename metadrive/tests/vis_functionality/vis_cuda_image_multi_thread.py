@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 import torch
 from OpenGL.GL import *  # noqa F403
-from cuda import cudart
-from cuda.cudart import cudaGraphicsRegisterFlags
+from cuda.bindings import runtime as cudart
+from cuda.bindings.runtime import cudaGraphicsRegisterFlags
 from panda3d.core import GraphicsOutput, Texture, GraphicsStateGuardianBase, DisplayRegionDrawCallbackData
 from panda3d.core import loadPrcFileData
 from torch.utils.dlpack import from_dlpack

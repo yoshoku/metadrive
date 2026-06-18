@@ -11,8 +11,8 @@ _cuda_enable = True
 try:
     import cupy as cp
     from OpenGL.GL import GL_TEXTURE_2D  # noqa F403
-    from cuda import cudart
-    from cuda.cudart import cudaGraphicsRegisterFlags
+    from cuda.bindings import runtime as cudart
+    from cuda.bindings.runtime import cudaGraphicsRegisterFlags
     from panda3d.core import GraphicsOutput, Texture, GraphicsStateGuardianBase, DisplayRegionDrawCallbackData
 except ImportError:
     _cuda_enable = False
