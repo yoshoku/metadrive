@@ -35,11 +35,11 @@ print("We will install the following packages: ", packages)
 
 assert sys.version_info.major == 3 and sys.version_info.minor >= 6, \
     "python version >= 3.6 is required"
-    
+
 install_requires = [
     "requests",
     "matplotlib",
-    "pygame",
+    "pygame-ce",
     "yapf",
     "tqdm",
     "progressbar",
@@ -118,7 +118,7 @@ How to publish to pypi and Draft github Release?  Noted by Zhenghao and Quanyi i
     twine upload dist/*
 
 7. Draft a release on github with new version number.
-Create new tag. 
+Create new tag.
 Set target to main.
 Upload assets.zip and the generated .whl files to the release.
 
