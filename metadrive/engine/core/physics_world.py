@@ -1,3 +1,4 @@
+import atexit
 import logging
 
 from panda3d.bullet import BulletWorld
@@ -16,6 +17,14 @@ class PhysicsWorld:
         self.static_world = BulletWorld() if not debug else self.dynamic_world
         CollisionGroup.set_collision_rule(self.static_world, disable_collision=disable_collision)
 
+        # The dynamic world holds a Python collision callback (a PythonCallbackObject). If the
+        # BulletWorld is left to be destroyed during interpreter shutdown (e.g. the user never
+        # calls env.close()), that callback's destructor calls PyGILState_Ensure() to release the
+        # Python callable *after* the Python runtime has been finalized, which segfaults (observed
+        # on macOS). Releasing the callback in an atexit hook runs while Python is still alive and
+        # avoids the crash. destroy() is idempotent and unregisters this hook.
+        atexit.register(self.destroy)
+
     def report_bodies(self):
         dynamic_bodies = \
             self.dynamic_world.getNumRigidBodies() + self.dynamic_world.getNumGhosts() + self.dynamic_world.getNumVehicles()
@@ -24,13 +33,20 @@ class PhysicsWorld:
         return "dynamic bodies:{}, static_bodies: {}".format(dynamic_bodies, static_bodies)
 
     def destroy(self):
-        self.dynamic_world.clearDebugNode()
-        self.dynamic_world.clearContactAddedCallback()
-        self.dynamic_world.clearFilterCallback()
+        if self.dynamic_world is None and self.static_world is None:
+            # already destroyed
+            return
+        atexit.unregister(self.destroy)
 
-        self.static_world.clearDebugNode()
-        self.static_world.clearContactAddedCallback()
-        self.static_world.clearFilterCallback()
+        if self.dynamic_world is not None:
+            self.dynamic_world.clearDebugNode()
+            self.dynamic_world.clearContactAddedCallback()
+            self.dynamic_world.clearFilterCallback()
+
+        if self.static_world is not None:
+            self.static_world.clearDebugNode()
+            self.static_world.clearContactAddedCallback()
+            self.static_world.clearFilterCallback()
 
         self.dynamic_world = None
         self.static_world = None
